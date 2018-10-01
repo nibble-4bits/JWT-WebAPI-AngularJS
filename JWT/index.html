@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>JWT Session example</title>
+
+    <!-- TODO: Destruir el token una vez que haya caducado -->
+    <script src="Scripts/angular.js"></script>
+    <script src="myJS/indexApp.js"></script>
+    <script src="myJS/jwtFunctions.js"></script>
+    <style>
+        body {
+            font-family: Verdana;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div ng-app="myApp" ng-controller="myCtrl" ng-mousemove="resetCount()" ng-keydown="resetCount()">
+        <!-- LOGIN -->
+        <div ng-show="!isAuthenticated">
+            <form ng-submit="login()">
+                Username:
+                <input type="text" ng-model="user.username" />
+                <br />
+                Password:
+                <input type="password" ng-model="user.password" />
+                <br />
+                <input type="submit" value="Submit" />
+            </form>
+        </div>
+
+        <div ng-show="isAuthenticated">
+            <h1>Welcome!</h1>
+            <p>El token caducará a las: {{ expirationTime }}</p>
+            <p>Le quedan {{ remainingSeconds }} segundos</p>
+            <button type="button" ng-click="logout()">Logout</button>
+
+            <!-- GET -->
+            <div>
+                <h2>Get all users</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IDUser</th>
+                            <th>Name</th>
+                            <th>Last Name</th>
+                            <th>Username</th>
+                            <th>Password</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="record in records">
+                            <td>{{ record.Id }}</td>
+                            <td>{{ record.Name }}</td>
+                            <td>{{ record.LastName }}</td>
+                            <td>{{ record.Nick }}</td>
+                            <td>{{ record.Password }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <input type="button" value="Show all users" ng-click="getUsers()" />
+            </div>
+
+            <hr />
+
+            <!-- POST -->
+            <div>
+                <h2>Add a new user</h2>
+                <form ng-submit="addUser()">
+                    Name:<br />
+                    <input type="text" ng-model="newUsr.name" />
+                    <br />
+                    Last name:<br />
+                    <input type="text" ng-model="newUsr.lastName" />
+                    <br />
+                    Nickname:<br />
+                    <input type="text" ng-model="newUsr.nick" />
+                    <br />
+                    Password:<br />
+                    <input type="password" ng-model="newUsr.password" />
+                    <br /><br />
+                    <input type="submit" value="Submit" />
+                </form>
+            </div>
+
+            <hr />
+
+            <!-- PUT -->
+            <div>
+                <h2>Change a user's password</h2>
+                <form ng-submit="updateUserPass()">
+                    User Id:<br />
+                    <input type="number" ng-model="updUsr.Id" />
+                    <br />
+                    New password:<br />
+                    <input type="password" ng-model="updUsr.Password" />
+                    <br /><br />
+                    <input type="submit" value="Submit" />
+                </form>
+            </div>
+
+            <hr />
+            
+            <!-- DELETE -->
+            <div>
+                <h2>Remove a user</h2>
+                <form ng-submit="deleteUser()">
+                    User Id:<br />
+                    <input type="number" ng-model="delUsr.Id" />
+                    <br /><br />
+                    <input type="submit" value="Submit" />
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
