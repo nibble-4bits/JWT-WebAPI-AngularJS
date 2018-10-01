@@ -11,6 +11,13 @@ app.controller("myCtrl", function ($scope, $http, $window, $interval) {
         $scope.intervalPromise = $interval($scope.pollSessionState, 1000);
     }
 
+    // LOGOUT
+    $scope.logout = function () {
+        $window.sessionStorage.removeItem("jwt"); // eliminamos el token al hacer logout
+        $scope.isAuthenticated = false;
+        $window.location.href = "index.html";
+    }
+
     $scope.requestNewToken = function () {
         $http({
             url: "api/login/authenticate",
@@ -37,7 +44,7 @@ app.controller("myCtrl", function ($scope, $http, $window, $interval) {
     }
 
     $scope.pollSessionState = function () {
-        if (new Date().valueOf() >= $scope.expirationDate.valueOf()) {
+        if (new Date().getTime() >= $scope.expirationDate.getTime()) {
             $scope.requestNewToken();
         }
 
@@ -53,13 +60,6 @@ app.controller("myCtrl", function ($scope, $http, $window, $interval) {
 
         $scope.remainingSeconds = $scope.timeout - $scope.elapsedSeconds;
         $scope.elapsedSeconds++;
-    }
-
-    // LOGOUT
-    $scope.logout = function () {
-        $window.sessionStorage.removeItem("jwt"); // eliminamos el token al hacer logout
-        $scope.isAuthenticated = false;
-        $window.location.href = "index.html";
     }
 
     // GET
@@ -83,14 +83,14 @@ app.controller("myCtrl", function ($scope, $http, $window, $interval) {
         $http({
             url: "api/user2",
             method: "POST",
-            data: angular.toJson($scope.newUsr),
+            data: angular.toJson($scope.usr),
             headers: {
                 "Content-Type": "application/json; charset=utf-8",
                 "Authorization": "Bearer " + $window.sessionStorage.getItem("jwt")
             }
         })
             .then(function success(response) {
-                alert("A new user has been added!");
+                $scope.getUsers();
             },
                 function error(response) {
                     alert("Error: " + response.status + ". Message: " + response.statusText);
@@ -103,14 +103,14 @@ app.controller("myCtrl", function ($scope, $http, $window, $interval) {
         $http({
             url: "api/user2",
             method: "PUT",
-            data: angular.toJson($scope.updUsr),
+            data: angular.toJson($scope.usr),
             headers: {
                 "Content-Type": "application/json; charset=utf-8",
                 "Authorization": "Bearer " + $window.sessionStorage.getItem("jwt")
             }
         })
             .then(function success(response) {
-                alert("User" + $scope.updUsr.Id + "'s password has been changed!");
+                $scope.getUsers();
             },
                 function error(response) {
                     alert("Error: " + response.status + ". Message: " + response.statusText);
@@ -123,14 +123,14 @@ app.controller("myCtrl", function ($scope, $http, $window, $interval) {
         $http({
             url: "api/user2",
             method: "DELETE",
-            data: angular.toJson($scope.delUsr),
+            data: angular.toJson($scope.usr),
             headers: {
                 "Content-Type": "application/json; charset=utf-8",
                 "Authorization": "Bearer " + $window.sessionStorage.getItem("jwt")
             }
         })
             .then(function success(response) {
-                alert("User" + $scope.delUsr.Id + " has been removed!");
+                $scope.getUsers();
             },
                 function error(response) {
                     alert("Error: " + response.status + ". Message: " + response.statusText);

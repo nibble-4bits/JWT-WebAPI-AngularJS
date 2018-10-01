@@ -3,8 +3,6 @@
 <head>
     <meta charset="utf-8" />
     <title>JWT Session example</title>
-
-    <!-- TODO: Destruir el token una vez que haya caducado -->
     <script src="Scripts/angular.js"></script>
     <script src="myJS/indexApp.js"></script>
     <script src="myJS/jwtFunctions.js"></script>
@@ -67,58 +65,34 @@
                         </tr>
                     </tbody>
                 </table>
-                <input type="button" value="Show all users" ng-click="getUsers()" />
+                <button type="button" ng-click="getUsers()">Show all users</button>
             </div>
 
             <hr />
 
-            <!-- POST -->
+            <!-- POST, PUT, DELETE -->
             <div>
-                <h2>Add a new user</h2>
-                <form ng-submit="addUser()">
+                <h2>User Panel</h2>
+                <form>
+                    Id: <br />
+                    <input type="number" ng-model="usr.Id" />
+                    <br />
                     Name:<br />
-                    <input type="text" ng-model="newUsr.name" />
+                    <input type="text" ng-model="usr.name" />
                     <br />
                     Last name:<br />
-                    <input type="text" ng-model="newUsr.lastName" />
+                    <input type="text" ng-model="usr.lastName" />
                     <br />
                     Nickname:<br />
-                    <input type="text" ng-model="newUsr.nick" />
+                    <input type="text" ng-model="usr.nick" />
                     <br />
                     Password:<br />
-                    <input type="password" ng-model="newUsr.password" />
+                    <input type="password" ng-model="usr.password" />
                     <br /><br />
-                    <input type="submit" value="Submit" />
                 </form>
-            </div>
-
-            <hr />
-
-            <!-- PUT -->
-            <div>
-                <h2>Change a user's password</h2>
-                <form ng-submit="updateUserPass()">
-                    User Id:<br />
-                    <input type="number" ng-model="updUsr.Id" />
-                    <br />
-                    New password:<br />
-                    <input type="password" ng-model="updUsr.Password" />
-                    <br /><br />
-                    <input type="submit" value="Submit" />
-                </form>
-            </div>
-
-            <hr />
-            
-            <!-- DELETE -->
-            <div>
-                <h2>Remove a user</h2>
-                <form ng-submit="deleteUser()">
-                    User Id:<br />
-                    <input type="number" ng-model="delUsr.Id" />
-                    <br /><br />
-                    <input type="submit" value="Submit" />
-                </form>
+                <button type="button" ng-click="addUser()">Add a new user</button>
+                <button type="button" ng-click="updateUserPass()">Change a user's password</button>
+                <button type="button" ng-click="deleteUser()">Remove a user</button>
             </div>
         </div>
     </div>
