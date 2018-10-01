@@ -7,28 +7,29 @@ app.controller("myCtrl", function ($scope, $http, $window, $interval) {
 
     // LOGIN
     $scope.login = function () {
-        $scope.requestNewToken()
-            .then(function success(response) {
-                $window.sessionStorage.setItem("jwt", response.data); // guardamos el token en el session storage
-                $scope.expirationDate = getExpirationDate($window.sessionStorage.getItem("jwt"));
-                $scope.expirationTime = $scope.expirationDate.toLocaleTimeString();
-                $scope.isAuthenticated = true;
-                $scope.intervalPromise = $interval($scope.pollSessionState, 1000);
-            },
-            function error(response) {
-                alert("Error: " + response.status + ". Message: " + response.statusText);
-                $window.sessionStorage.removeItem("jwt"); // eliminamos cualquier token que hubiera guardado si hay error
-                $scope.isAuthenticated = false;
-            });
+        $scope.requestNewToken();
+        $scope.intervalPromise = $interval($scope.pollSessionState, 1000);
     }
 
     $scope.requestNewToken = function () {
-        return $http({
+        $http({
             url: "api/login/authenticate",
             method: "POST",
             data: angular.toJson($scope.user),
             headers: { "Content-Type": "application/json; charset=utf-8" }
-        });
+        })
+        .then(
+            response => {
+                $window.sessionStorage.setItem("jwt", response.data); // guardamos el token en el session storage
+                $scope.expirationDate = getExpirationDate($window.sessionStorage.getItem("jwt"));
+                $scope.expirationTime = $scope.expirationDate.toLocaleTimeString();
+                $scope.isAuthenticated = true;
+            },
+            response => {
+                alert("Error: " + response.status + ". Message: " + response.statusText);
+                $window.sessionStorage.removeItem("jwt"); // eliminamos cualquier token que hubiera guardado si hay error
+                $scope.isAuthenticated = false;
+            });
     }
 
     $scope.resetCount = function () {
@@ -37,18 +38,7 @@ app.controller("myCtrl", function ($scope, $http, $window, $interval) {
 
     $scope.pollSessionState = function () {
         if (new Date().valueOf() >= $scope.expirationDate.valueOf()) {
-            $scope.requestNewToken()
-                .then(function success(response) {
-                    $window.sessionStorage.setItem("jwt", response.data); // guardamos el token en el session storage
-                    $scope.expirationDate = getExpirationDate($window.sessionStorage.getItem("jwt"));
-                    $scope.expirationTime = $scope.expirationDate.toLocaleTimeString();
-                    $scope.isAuthenticated = true;
-                },
-                function error(response) {
-                    alert("Error: " + response.status + ". Message: " + response.statusText);
-                    $window.sessionStorage.removeItem("jwt"); // eliminamos cualquier token que hubiera guardado si hay error
-                    $scope.isAuthenticated = false;
-                });
+            $scope.requestNewToken();
         }
 
         if ($scope.elapsedSeconds >= $scope.timeout) {
